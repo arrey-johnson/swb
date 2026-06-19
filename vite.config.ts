@@ -14,7 +14,7 @@ export default defineConfig({
       manifest: {
         id: '/',
         name: 'SaveWithBanks',
-        short_name: 'SWB',
+        short_name: 'SaveWithBanks',
         description: 'Goal-based savings platform',
         theme_color: '#6D28D9',
         background_color: '#ffffff',

@@ -1,6 +1,6 @@
 {
   "name": "SaveWithBanks",
-  "short_name": "SWB",
+  "short_name": "SaveWithBanks",
   "description": "Goal-based savings platform for Cameroon",
   "start_url": "/",
   "scope": "/",
