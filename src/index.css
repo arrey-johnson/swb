@@ -11,12 +11,25 @@
 
 html {
   background: #120828;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   @apply bg-gray-50 text-gray-900 antialiased;
   font-family: var(--font-sans);
   overflow-x: hidden;
+  touch-action: manipulation;
+  overscroll-behavior-x: none;
+}
+
+/* Prevent iOS Safari from zooming when focusing form fields (requires >= 16px) */
+@media (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='hidden']),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
 }
 
 /* iOS / Android safe-area insets for notched phones and PWA standalone mode */
