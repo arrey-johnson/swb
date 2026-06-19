@@ -31,7 +31,7 @@ export function AppLayout() {
         <div className="mx-auto max-w-lg px-4 py-3 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
-              <span className="text-white font-bold text-sm">SW</span>
+              <span className="text-white font-bold text-[10px] tracking-tight">SWB</span>
             </div>
             <span className="font-semibold text-gray-900">SaveWithBanks</span>
           </Link>

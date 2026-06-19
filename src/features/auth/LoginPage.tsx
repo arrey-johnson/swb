@@ -36,7 +36,7 @@ export default function LoginPage() {
       <div className="mx-auto w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center mb-4">
-            <span className="text-white font-bold text-xl">SW</span>
+            <span className="text-white font-bold text-lg tracking-tight">SWB</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
           <p className="text-gray-500 mt-1">Sign in to your SaveWithBanks account</p>

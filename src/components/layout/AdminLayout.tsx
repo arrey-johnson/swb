@@ -85,7 +85,7 @@ export function AdminLayout() {
       <div className="px-4 py-5 border-b border-slate-800">
         <Link to="/admin" className="flex items-center gap-3" onClick={onNavigate}>
           <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center ring-1 ring-white/20">
-            <span className="text-white font-bold text-sm">SW</span>
+            <span className="text-white font-bold text-[10px] tracking-tight">SWB</span>
           </div>
           <div>
             <span className="font-semibold text-white block leading-tight">SaveWithBanks</span>
@@ -135,7 +135,7 @@ export function AdminLayout() {
         <div className="px-4 py-3 flex items-center justify-between">
           <Link to="/admin" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-xl bg-white/10 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">SW</span>
+              <span className="text-white font-bold text-[10px] tracking-tight">SWB</span>
             </div>
             <span className="font-semibold">Admin</span>
           </Link>
