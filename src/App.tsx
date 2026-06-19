@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '@/app/AuthProvider'
 import { ToastProvider } from '@/components/ui/Toast'
@@ -10,6 +10,7 @@ import { RoleRedirect } from '@/app/RoleRedirect'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { AdminLayout } from '@/components/layout/AdminLayout'
 import { OfflineBanner } from '@/components/layout/OfflineBanner'
+import { PwaInstallPrompt } from '@/components/layout/PwaInstallPrompt'
 import { LanguageProvider } from '@/lib/i18n/LanguageProvider'
 
 import LoginPage from '@/features/auth/LoginPage'
@@ -54,6 +55,14 @@ const queryClient = new QueryClient({
   },
 })
 
+const AUTH_PATHS = /^\/(login|register|forgot-password)(\/|$)/
+
+function GlobalPwaInstallPrompt() {
+  const { pathname } = useLocation()
+  const onAuthPage = AUTH_PATHS.test(pathname)
+  return <PwaInstallPrompt bottomOffset={onAuthPage ? 'auth' : 'nav'} />
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -62,6 +71,7 @@ export default function App() {
       <AuthProvider>
         <OfflineBanner />
         <BrowserRouter>
+          <GlobalPwaInstallPrompt />
           <Routes>
             <Route path="/reset-password" element={<ResetPasswordPage />} />
 

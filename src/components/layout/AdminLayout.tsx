@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/app/AuthProvider'
 import { useProfile, useDepositRequests, useAdminWithdrawals } from '@/lib/api/hooks'
 import { useAdminRealtimeSync } from '@/lib/hooks/useAdminRealtimeSync'
+import { PwaInstallButton } from '@/components/layout/PwaInstallPrompt'
 import { useState } from 'react'
 
 const primaryNav = [
@@ -138,14 +139,17 @@ export function AdminLayout() {
             </div>
             <span className="font-semibold">Admin</span>
           </Link>
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className="p-2 text-slate-400 hover:text-white"
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <PwaInstallButton />
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              className="p-2 text-slate-400 hover:text-white"
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </div>
         </div>
       </header>
 

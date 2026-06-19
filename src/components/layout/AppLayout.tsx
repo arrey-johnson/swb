@@ -5,7 +5,7 @@ import { useAuth } from '@/app/AuthProvider'
 import { useUnreadCount } from '@/lib/api/hooks'
 import { useRealtimeSync } from '@/lib/hooks/useRealtimeSync'
 import { AccountStatusBanner } from '@/components/layout/AccountStatusBanner'
-import { PwaInstallPrompt } from '@/components/layout/PwaInstallPrompt'
+import { PwaInstallButton } from '@/components/layout/PwaInstallPrompt'
 import { useLanguage } from '@/lib/i18n/LanguageProvider'
 
 export function AppLayout() {
@@ -36,6 +36,7 @@ export function AppLayout() {
             <span className="font-semibold text-gray-900">SaveWithBanks</span>
           </Link>
           <div className="flex items-center gap-1">
+            <PwaInstallButton />
             <Link
               to="/help"
               className="p-2 text-gray-500 hover:text-primary rounded-lg transition-colors"
@@ -70,8 +71,6 @@ export function AppLayout() {
         {!hideStatusBanner && <AccountStatusBanner />}
         <Outlet />
       </main>
-
-      <PwaInstallPrompt />
 
       <nav className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-100 safe-area-pb">
         <div className="mx-auto max-w-lg flex">

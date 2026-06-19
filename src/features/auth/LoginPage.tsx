@@ -4,6 +4,7 @@ import { useAuth } from '@/app/AuthProvider'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { PasswordInput } from '@/components/ui/PasswordInput'
+import { PwaInstallButton } from '@/components/layout/PwaInstallPrompt'
 
 export default function LoginPage() {
   const { signIn } = useAuth()
@@ -28,7 +29,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center px-6 py-12 bg-gradient-to-b from-primary/5 to-gray-50">
+    <div className="min-h-screen flex flex-col justify-center px-6 py-12 bg-gradient-to-b from-primary/5 to-gray-50 relative">
+      <div className="absolute top-4 right-4">
+        <PwaInstallButton />
+      </div>
       <div className="mx-auto w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center mb-4">
