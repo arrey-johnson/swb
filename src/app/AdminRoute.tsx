@@ -1,16 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useProfile } from '@/lib/api/hooks'
+import { SplashScreen } from '@/components/brand/SplashScreen'
 
 export function AdminRoute() {
   const { data: profile, isLoading } = useProfile()
 
-  if (isLoading) {
-    return (
-      <div className="min-h-dvh flex items-center justify-center safe-area-pt safe-area-pb">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    )
-  }
+  if (isLoading) return <SplashScreen />
 
   if (profile?.role !== 'admin') {
     return <Navigate to="/dashboard" replace />

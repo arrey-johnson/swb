@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate PWA and favicon assets from public/app-icon.png."""
+"""Generate PWA icons and iOS splash screens from public/app-icon.png."""
 from pathlib import Path
 from PIL import Image
 

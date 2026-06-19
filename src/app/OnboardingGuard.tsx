@@ -1,19 +1,14 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '@/app/AuthProvider'
 import { useProfile, useGoals } from '@/lib/api/hooks'
+import { SplashScreen } from '@/components/brand/SplashScreen'
 
 export function OnboardingGuard() {
   const { user } = useAuth()
   const { data: profile, isLoading: profileLoading } = useProfile()
   const { data: goals, isLoading: goalsLoading } = useGoals()
 
-  if (profileLoading || goalsLoading) {
-    return (
-      <div className="min-h-dvh flex items-center justify-center safe-area-pt safe-area-pb">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    )
-  }
+  if (profileLoading || goalsLoading) return <SplashScreen />
 
   if (!user?.email_confirmed_at) {
     return <Navigate to="/onboarding/verify" replace />

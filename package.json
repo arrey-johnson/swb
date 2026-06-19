@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "docs:pdf": "python3 scripts/generate-product-pdf.py",
-    "icons:pwa": "python3 scripts/generate-pwa-icons.py"
+    "icons:pwa": "python3 scripts/generate-pwa-icons.py && python3 scripts/generate-splash.py",
+    "splash:generate": "python3 scripts/generate-splash.py"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",

@@ -10,14 +10,14 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.png', 'app-icon.png', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
+      includeAssets: ['favicon.png', 'app-icon.png', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png', 'splash/**/*'],
       manifest: {
         id: '/',
         name: 'SaveWithBanks',
         short_name: 'SaveWithBanks',
         description: 'Goal-based savings platform',
         theme_color: '#6D28D9',
-        background_color: '#ffffff',
+        background_color: '#120828',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',
