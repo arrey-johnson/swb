@@ -1,4 +1,4 @@
-import { formatFCFA, formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
 import type { Transaction } from '@/types/database'
 
 export function downloadCsv(filename: string, rows: string[][]) {

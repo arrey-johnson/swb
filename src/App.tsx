@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '@/app/AuthProvider'
+import { ToastProvider } from '@/components/ui/Toast'
 import { ProtectedRoute, PublicRoute } from '@/app/ProtectedRoute'
 import { OnboardingGuard } from '@/app/OnboardingGuard'
 import { AdminRoute } from '@/app/AdminRoute'
@@ -41,6 +42,11 @@ import AdminPenaltiesPage from '@/features/admin/AdminPenaltiesPage'
 import AdminReportsPage from '@/features/admin/AdminReportsPage'
 import AdminFinanceFeedPage from '@/features/admin/AdminFinanceFeedPage'
 import AdminWithdrawalsPage from '@/features/admin/AdminWithdrawalsPage'
+import AdminUserDetailPage from '@/features/admin/AdminUserDetailPage'
+import AdminSettingsPage from '@/features/admin/AdminSettingsPage'
+import AdminAuditPage from '@/features/admin/AdminAuditPage'
+import AdminNotifyPage from '@/features/admin/AdminNotifyPage'
+import AdminTeamPage from '@/features/admin/AdminTeamPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,6 +57,7 @@ const queryClient = new QueryClient({
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ToastProvider>
       <LanguageProvider>
       <AuthProvider>
         <OfflineBanner />
@@ -71,11 +78,16 @@ export default function App() {
                 <Route element={<AdminLayout />}>
                   <Route path="/admin" element={<AdminDashboardPage />} />
                   <Route path="/admin/users" element={<AdminUsersPage />} />
+                  <Route path="/admin/users/:id" element={<AdminUserDetailPage />} />
                   <Route path="/admin/deposits" element={<AdminDepositsPage />} />
                   <Route path="/admin/withdrawals" element={<AdminWithdrawalsPage />} />
                   <Route path="/admin/penalties" element={<AdminPenaltiesPage />} />
                   <Route path="/admin/feed" element={<AdminFinanceFeedPage />} />
                   <Route path="/admin/reports" element={<AdminReportsPage />} />
+                  <Route path="/admin/settings" element={<AdminSettingsPage />} />
+                  <Route path="/admin/audit" element={<AdminAuditPage />} />
+                  <Route path="/admin/notify" element={<AdminNotifyPage />} />
+                  <Route path="/admin/team" element={<AdminTeamPage />} />
                 </Route>
               </Route>
 
@@ -113,6 +125,7 @@ export default function App() {
         </BrowserRouter>
       </AuthProvider>
       </LanguageProvider>
+      </ToastProvider>
     </QueryClientProvider>
   )
 }

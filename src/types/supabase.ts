@@ -548,6 +548,7 @@ export type Database = {
           net_amount: number
           paid_at: string | null
           payout_phone: string | null
+          payout_reference: string | null
           payout_status: Database['public']['Enums']['payout_status']
           penalty_amount: number
           user_id: string
@@ -630,9 +631,39 @@ export type Database = {
         Returns: string
       }
       get_admin_metrics: { Args: never; Returns: Json }
+      get_admin_user_detail: { Args: { p_user_id: string }; Returns: Json }
       get_dashboard_metrics: { Args: never; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
-      mark_withdrawal_paid: { Args: { p_withdrawal_id: string }; Returns: undefined }
+      admin_update_account_status: {
+        Args: { p_user_id: string; p_status: Database['public']['Enums']['account_status']; p_reason?: string }
+        Returns: undefined
+      }
+      admin_credit_balance: {
+        Args: {
+          p_user_id: string
+          p_amount: number
+          p_type: Database['public']['Enums']['transaction_type']
+          p_reason: string
+          p_goal_id?: string
+        }
+        Returns: string
+      }
+      admin_debit_balance: {
+        Args: { p_user_id: string; p_amount: number; p_reason: string; p_goal_id?: string }
+        Returns: string
+      }
+      admin_update_user_role: {
+        Args: { p_user_id: string; p_role: Database['public']['Enums']['user_role'] }
+        Returns: undefined
+      }
+      admin_verify_phone: {
+        Args: { p_user_id: string; p_verified: boolean }
+        Returns: undefined
+      }
+      mark_withdrawal_paid: {
+        Args: { p_withdrawal_id: string; p_payout_reference?: string }
+        Returns: undefined
+      }
       reject_deposit: {
         Args: { p_reason: string; p_request_id: string }
         Returns: undefined

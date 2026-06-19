@@ -80,10 +80,31 @@ export interface Withdrawal {
   is_early: boolean
   payout_phone: string | null
   payout_status: PayoutStatus
+  payout_reference: string | null
   paid_at: string | null
   created_at: string
   savings_goals?: Pick<SavingsGoal, 'title'>
   profiles?: Pick<Profile, 'full_name' | 'email' | 'phone'>
+}
+
+export interface AuditLog {
+  id: string
+  actor_id: string | null
+  action: string
+  metadata: Record<string, unknown>
+  created_at: string
+  profiles?: Pick<Profile, 'full_name' | 'email'>
+}
+
+export interface AdminUserDetail {
+  profile: Profile
+  account: SavingsAccount
+  discipline: DisciplineScore | null
+  goals_count: number
+  active_goals: number
+  total_deposited: number
+  pending_deposits: number
+  pending_payouts: number
 }
 
 export interface Notification {
@@ -144,6 +165,13 @@ export interface AdminMetrics {
   active_goals: number
   matured_goals: number
   pending_deposits: number
+  pending_payouts: number
+  new_users_week: number
+  new_users_month: number
+  deposits_this_week: number
+  withdrawals_this_week: number
+  oldest_pending_deposit_hours: number
+  suspended_accounts: number
 }
 
 export interface PenaltyPreview {

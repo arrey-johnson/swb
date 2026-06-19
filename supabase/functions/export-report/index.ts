@@ -1,5 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { handleCors, jsonResponse, errorResponse, getServiceClient, getAuthenticatedUser, requireAdmin } from '../_shared/cors.ts'
+import { handleCors, errorResponse, getServiceClient, getAuthenticatedUser, requireAdmin } from '../_shared/cors.ts'
 
 serve(async (req) => {
   const cors = handleCors(req)
@@ -14,22 +14,53 @@ serve(async (req) => {
       return errorResponse('Forbidden', 403)
     }
 
-    const { type } = await req.json()
+    const { type, from, to, limit = 5000, offset = 0 } = await req.json()
+
+    const maxLimit = Math.min(Number(limit) || 5000, 10000)
+    const rangeEnd = (Number(offset) || 0) + maxLimit - 1
 
     let data: unknown[] = []
+
     if (type === 'transactions') {
-      const res = await supabase
+      let q = supabase
         .from('transactions')
-        .select('*, profiles(full_name, email)')
+        .select('*, profiles(full_name, email), savings_goals(title)')
         .order('created_at', { ascending: false })
-        .limit(1000)
+        .range(Number(offset) || 0, rangeEnd)
+      if (from) q = q.gte('created_at', from)
+      if (to) q = q.lte('created_at', to)
+      const res = await q
       data = res.data ?? []
     } else if (type === 'withdrawals') {
-      const res = await supabase
+      let q = supabase
         .from('withdrawals')
         .select('*, profiles(full_name, email), savings_goals(title)')
         .order('created_at', { ascending: false })
-        .limit(1000)
+        .range(Number(offset) || 0, rangeEnd)
+      if (from) q = q.gte('created_at', from)
+      if (to) q = q.lte('created_at', to)
+      const res = await q
+      data = res.data ?? []
+    } else if (type === 'deposits') {
+      let q = supabase
+        .from('deposit_requests')
+        .select('*, profiles(full_name, email), savings_goals(title)')
+        .order('created_at', { ascending: false })
+        .range(Number(offset) || 0, rangeEnd)
+      if (from) q = q.gte('created_at', from)
+      if (to) q = q.lte('created_at', to)
+      const res = await q
+      data = res.data ?? []
+    } else if (type === 'users') {
+      let q = supabase
+        .from('profiles')
+        .select('*, savings_accounts(balance, status)')
+        .eq('role', 'saver')
+        .order('created_at', { ascending: false })
+        .range(Number(offset) || 0, rangeEnd)
+      if (from) q = q.gte('created_at', from)
+      if (to) q = q.lte('created_at', to)
+      const res = await q
       data = res.data ?? []
     } else {
       return errorResponse('Invalid export type')

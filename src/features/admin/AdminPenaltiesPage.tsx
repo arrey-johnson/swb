@@ -3,17 +3,27 @@ import { usePenaltySettings, useUpdatePenalty } from '@/lib/api/hooks'
 import { Card, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { useToast } from '@/components/ui/Toast'
 
 export default function AdminPenaltiesPage() {
   const { data: settings, isLoading } = usePenaltySettings()
   const updatePenalty = useUpdatePenalty()
+  const toast = useToast()
   const [edits, setEdits] = useState<Record<string, string>>({})
 
   const handleSave = async (id: string) => {
     const percentage = parseFloat(edits[id])
-    if (isNaN(percentage) || percentage < 0 || percentage > 100) return
-    await updatePenalty.mutateAsync({ id, percentage })
-    setEdits((prev) => { const n = { ...prev }; delete n[id]; return n })
+    if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+      toast.error('Enter a percentage between 0 and 100')
+      return
+    }
+    try {
+      await updatePenalty.mutateAsync({ id, percentage })
+      toast.success('Penalty rate updated')
+      setEdits((prev) => { const n = { ...prev }; delete n[id]; return n })
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to save')
+    }
   }
 
   return (

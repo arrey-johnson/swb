@@ -18,4 +18,10 @@ export const queryKeys = {
   financePosts: (savedOnly?: boolean) => ['finance-posts', { savedOnly: !!savedOnly }] as const,
   financeComments: (postId: string) => ['finance-comments', postId] as const,
   adminFinancePosts: ['admin', 'finance-posts'] as const,
+  adminUserDetail: (id: string) => ['admin', 'user', id] as const,
+  adminUserGoals: (id: string) => ['admin', 'user', id, 'goals'] as const,
+  adminUserTransactions: (id: string) => ['admin', 'user', id, 'transactions'] as const,
+  auditLogs: ['admin', 'audit-logs'] as const,
+  adminTeam: ['admin', 'team'] as const,
+  adminFinanceComments: (postId: string) => ['admin', 'finance-comments', postId] as const,
 }

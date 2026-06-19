@@ -16,6 +16,11 @@ import type {
   FinancePostComment,
   FinancePostWithMeta,
   DepositInstructions,
+  AuditLog,
+  AdminUserDetail,
+  AccountStatus,
+  UserRole,
+  TransactionType,
 } from '@/types/database'
 
 export function useProfile() {
@@ -212,7 +217,7 @@ export function useAdminWithdrawals(pendingOnly = false) {
     queryFn: async () => {
       let q = supabase
         .from('withdrawals')
-        .select('*, savings_goals(title), profiles(full_name, email, phone)')
+        .select('*, savings_goals(title), profiles!withdrawals_user_id_fkey(full_name, email, phone)')
         .order('created_at', { ascending: false })
       if (pendingOnly) q = q.eq('payout_status', 'pending_payout')
       const { data, error } = await q
@@ -225,15 +230,17 @@ export function useAdminWithdrawals(pendingOnly = false) {
 export function useMarkWithdrawalPaid() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: async (withdrawalId: string) => {
+    mutationFn: async ({ withdrawalId, payoutReference }: { withdrawalId: string; payoutReference?: string }) => {
       const { error } = await supabase.rpc('mark_withdrawal_paid', {
         p_withdrawal_id: withdrawalId,
+        p_payout_reference: payoutReference ?? undefined,
       })
       if (error) throw error
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.adminWithdrawals })
       qc.invalidateQueries({ queryKey: queryKeys.withdrawals })
+      qc.invalidateQueries({ queryKey: queryKeys.adminMetrics })
     },
   })
 }
@@ -356,7 +363,7 @@ export function useDepositRequests(status?: string) {
     queryFn: async () => {
       let q = supabase
         .from('deposit_requests')
-        .select('*, savings_goals(title), profiles(full_name, email)')
+        .select('*, savings_goals(title), profiles!deposit_requests_user_id_fkey(full_name, email)')
         .order('created_at', { ascending: false })
       if (status) q = q.eq('status', status as 'pending' | 'approved' | 'rejected')
       const { data, error } = await q
@@ -383,7 +390,10 @@ export function useRejectDeposit() {
   return useMutation({
     mutationFn: ({ requestId, reason }: { requestId: string; reason: string }) =>
       invokeFunction('reject-deposit', { request_id: requestId, reason }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.depositRequests }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.depositRequests })
+      qc.invalidateQueries({ queryKey: queryKeys.adminMetrics })
+    },
   })
 }
 
@@ -398,15 +408,18 @@ export function useAdminMetrics() {
   })
 }
 
-export function useAdminUsers(search?: string) {
+export function useAdminUsers(search?: string, page = 1, pageSize = 20, includeAdmins = false) {
   return useQuery({
-    queryKey: [...queryKeys.adminUsers, search],
+    queryKey: [...queryKeys.adminUsers, search, page, pageSize, includeAdmins],
     queryFn: async () => {
-      let q = supabase.from('profiles').select('*').eq('role', 'saver')
+      const from = (page - 1) * pageSize
+      const to = from + pageSize - 1
+      let q = supabase.from('profiles').select('*', { count: 'exact' })
+      if (!includeAdmins) q = q.eq('role', 'saver')
       if (search) q = q.or(`full_name.ilike.%${search}%,email.ilike.%${search}%`)
-      const { data, error } = await q.order('created_at', { ascending: false })
+      const { data, error, count } = await q.order('created_at', { ascending: false }).range(from, to)
       if (error) throw error
-      return data as Profile[]
+      return { users: data as Profile[], total: count ?? 0 }
     },
   })
 }
@@ -689,6 +702,277 @@ export function useDeleteFinancePost() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.adminFinancePosts })
       qc.invalidateQueries({ queryKey: ['finance-posts'] })
+    },
+  })
+}
+
+// ─── Admin extended hooks ───────────────────────────────────────────────────
+
+export function useAdminUserDetail(userId: string) {
+  return useQuery({
+    queryKey: queryKeys.adminUserDetail(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_admin_user_detail', { p_user_id: userId })
+      if (error) throw error
+      return data as unknown as AdminUserDetail
+    },
+    enabled: !!userId,
+  })
+}
+
+export function useAdminUserGoals(userId: string) {
+  return useQuery({
+    queryKey: queryKeys.adminUserGoals(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('savings_goals')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      return data as SavingsGoal[]
+    },
+    enabled: !!userId,
+  })
+}
+
+export function useAdminUserTransactions(userId: string, limit = 20) {
+  return useQuery({
+    queryKey: queryKeys.adminUserTransactions(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*, savings_goals(title)')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(limit)
+      if (error) throw error
+      return data as Transaction[]
+    },
+    enabled: !!userId,
+  })
+}
+
+export function useAdminUpdateAccountStatus() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: { userId: string; status: AccountStatus; reason?: string }) => {
+      const { error } = await supabase.rpc('admin_update_account_status', {
+        p_user_id: input.userId,
+        p_status: input.status,
+        p_reason: input.reason ?? undefined,
+      })
+      if (error) throw error
+    },
+    onSuccess: (_, { userId }) => {
+      qc.invalidateQueries({ queryKey: queryKeys.adminUserDetail(userId) })
+      qc.invalidateQueries({ queryKey: queryKeys.adminUsers })
+      qc.invalidateQueries({ queryKey: queryKeys.adminMetrics })
+      qc.invalidateQueries({ queryKey: queryKeys.auditLogs })
+    },
+  })
+}
+
+export function useAdminCreditBalance() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: {
+      userId: string
+      amount: number
+      type: Extract<TransactionType, 'adjustment' | 'refund'>
+      reason: string
+      goalId?: string
+    }) => {
+      const { error } = await supabase.rpc('admin_credit_balance', {
+        p_user_id: input.userId,
+        p_amount: input.amount,
+        p_type: input.type,
+        p_reason: input.reason,
+        p_goal_id: input.goalId ?? undefined,
+      })
+      if (error) throw error
+    },
+    onSuccess: (_, { userId }) => {
+      qc.invalidateQueries({ queryKey: queryKeys.adminUserDetail(userId) })
+      qc.invalidateQueries({ queryKey: queryKeys.adminUserGoals(userId) })
+      qc.invalidateQueries({ queryKey: queryKeys.adminUserTransactions(userId) })
+      qc.invalidateQueries({ queryKey: queryKeys.adminMetrics })
+    },
+  })
+}
+
+export function useAdminDebitBalance() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: { userId: string; amount: number; reason: string; goalId?: string }) => {
+      const { error } = await supabase.rpc('admin_debit_balance', {
+        p_user_id: input.userId,
+        p_amount: input.amount,
+        p_reason: input.reason,
+        p_goal_id: input.goalId ?? undefined,
+      })
+      if (error) throw error
+    },
+    onSuccess: (_, { userId }) => {
+      qc.invalidateQueries({ queryKey: queryKeys.adminUserDetail(userId) })
+      qc.invalidateQueries({ queryKey: queryKeys.adminUserGoals(userId) })
+      qc.invalidateQueries({ queryKey: queryKeys.adminUserTransactions(userId) })
+      qc.invalidateQueries({ queryKey: queryKeys.adminMetrics })
+    },
+  })
+}
+
+export function useAdminUpdateUserRole() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: { userId: string; role: UserRole }) => {
+      const { error } = await supabase.rpc('admin_update_user_role', {
+        p_user_id: input.userId,
+        p_role: input.role,
+      })
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.adminUsers })
+      qc.invalidateQueries({ queryKey: queryKeys.adminTeam })
+    },
+  })
+}
+
+export function useAdminVerifyPhone() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: { userId: string; verified: boolean }) => {
+      const { error } = await supabase.rpc('admin_verify_phone', {
+        p_user_id: input.userId,
+        p_verified: input.verified,
+      })
+      if (error) throw error
+    },
+    onSuccess: (_, { userId }) => {
+      qc.invalidateQueries({ queryKey: queryKeys.adminUserDetail(userId) })
+    },
+  })
+}
+
+export function useUpdatePlatformSettings() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (value: DepositInstructions) => {
+      const { error } = await supabase
+        .from('platform_settings')
+        .upsert({ key: 'deposit_instructions', value: { phone: value.phone, name: value.name } })
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.platformSettings })
+    },
+  })
+}
+
+export function useAuditLogs(action?: string, page = 1, pageSize = 30) {
+  return useQuery({
+    queryKey: [...queryKeys.auditLogs, action, page, pageSize],
+    queryFn: async () => {
+      const from = (page - 1) * pageSize
+      const to = from + pageSize - 1
+      let q = supabase
+        .from('audit_logs')
+        .select('*, profiles!audit_logs_actor_id_fkey(full_name, email)', { count: 'exact' })
+        .order('created_at', { ascending: false })
+      if (action) q = q.eq('action', action)
+      const { data, error, count } = await q.range(from, to)
+      if (error) throw error
+      return { logs: data as AuditLog[], total: count ?? 0 }
+    },
+  })
+}
+
+export function useAdminTeam() {
+  return useQuery({
+    queryKey: queryKeys.adminTeam,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('role', 'admin')
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      return data as Profile[]
+    },
+  })
+}
+
+export function useSendAdminNotification() {
+  return useMutation({
+    mutationFn: (input: { user_id: string; title: string; body: string; link_path?: string }) =>
+      invokeFunction<{ notification_id: string }>('send-notification', input),
+  })
+}
+
+export function useAdminFinanceComments(postId: string) {
+  return useQuery({
+    queryKey: queryKeys.adminFinanceComments(postId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('finance_post_comments')
+        .select('*, profiles!finance_post_comments_user_id_fkey(full_name, email)')
+        .eq('post_id', postId)
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      return data as FinancePostComment[]
+    },
+    enabled: !!postId,
+  })
+}
+
+export function useDeleteFinanceComment() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, postId }: { id: string; postId: string }) => {
+      const { error } = await supabase.from('finance_post_comments').delete().eq('id', id)
+      if (error) throw error
+      return postId
+    },
+    onSuccess: (postId) => {
+      qc.invalidateQueries({ queryKey: queryKeys.adminFinanceComments(postId) })
+      qc.invalidateQueries({ queryKey: ['finance-posts'] })
+    },
+  })
+}
+
+export function useDepositRequestsPaginated(status?: string, page = 1, pageSize = 20) {
+  return useQuery({
+    queryKey: [...queryKeys.depositRequests, status, page, pageSize],
+    queryFn: async () => {
+      const from = (page - 1) * pageSize
+      const to = from + pageSize - 1
+      let q = supabase
+        .from('deposit_requests')
+        .select('*, savings_goals(title), profiles!deposit_requests_user_id_fkey(full_name, email)', { count: 'exact' })
+        .order('created_at', { ascending: false })
+      if (status) q = q.eq('status', status as 'pending' | 'approved' | 'rejected')
+      const { data, error, count } = await q.range(from, to)
+      if (error) throw error
+      return { requests: data as DepositRequest[], total: count ?? 0 }
+    },
+  })
+}
+
+export function useAdminWithdrawalsPaginated(pendingOnly = false, page = 1, pageSize = 20) {
+  return useQuery({
+    queryKey: [...queryKeys.adminWithdrawals, pendingOnly, page, pageSize],
+    queryFn: async () => {
+      const from = (page - 1) * pageSize
+      const to = from + pageSize - 1
+      let q = supabase
+        .from('withdrawals')
+        .select('*, savings_goals(title), profiles(full_name, email, phone)', { count: 'exact' })
+        .order('created_at', { ascending: false })
+      if (pendingOnly) q = q.eq('payout_status', 'pending_payout')
+      const { data, error, count } = await q.range(from, to)
+      if (error) throw error
+      return { withdrawals: data as Withdrawal[], total: count ?? 0 }
     },
   })
 }
