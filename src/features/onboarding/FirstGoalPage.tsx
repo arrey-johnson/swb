@@ -41,7 +41,7 @@ export default function FirstGoalPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12 bg-gray-50">
+    <div className="min-h-dvh flex items-center justify-center px-6 py-12 bg-gray-50 safe-area-pt safe-area-pb safe-area-px">
       <Card className="max-w-md w-full">
         <h1 className="text-xl font-bold text-gray-900 mb-1">Create your first goal</h1>
         <p className="text-gray-500 text-sm mb-6">What are you saving for?</p>

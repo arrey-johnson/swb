@@ -124,14 +124,14 @@ export function AdminLayout() {
   )
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-dvh bg-slate-50">
       {/* Desktop sidebar */}
       <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-64 lg:flex-col bg-slate-900">
         <Sidebar />
       </aside>
 
       {/* Mobile header */}
-      <header className="sticky top-0 z-40 bg-slate-900 text-white border-b border-slate-800 lg:hidden">
+      <header className="sticky top-0 z-40 bg-slate-900 text-white border-b border-slate-800 lg:hidden safe-area-pt safe-area-px">
         <div className="px-4 py-3 flex items-center justify-between">
           <Link to="/admin" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-xl bg-white/10 flex items-center justify-center">
@@ -157,7 +157,7 @@ export function AdminLayout() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-72 bg-slate-900 flex flex-col">
+          <div className="absolute inset-y-0 left-0 w-72 bg-slate-900 flex flex-col safe-area-pt">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
@@ -172,13 +172,13 @@ export function AdminLayout() {
 
       {/* Main content */}
       <div className="lg:pl-64">
-        <main className="mx-auto max-w-6xl px-4 py-6 pb-24 lg:pb-6">
+        <main className="mx-auto max-w-6xl px-4 py-6 pb-bottom-nav lg:pb-6">
           <Outlet />
         </main>
       </div>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed bottom-0 inset-x-0 z-40 bg-slate-900 border-t border-slate-800 lg:hidden">
+      <nav className="fixed bottom-0 inset-x-0 z-40 bg-slate-900 border-t border-slate-800 lg:hidden safe-area-pb safe-area-px">
         <div className="flex">
           {primaryNav.map(({ to, icon: Icon, label, exact, badge: b }) => {
             const active = exact ? location.pathname === to : location.pathname.startsWith(to)

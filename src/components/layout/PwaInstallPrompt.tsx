@@ -80,11 +80,11 @@ export function PwaInstallPrompt({ bottomOffset = 'nav' }: { bottomOffset?: Bott
     await install()
   }
 
-  const bottomClass = bottomOffset === 'auth' ? 'bottom-6' : 'bottom-20'
+  const bottomClass = bottomOffset === 'auth' ? 'bottom-safe-6' : 'bottom-above-nav'
 
   return (
     <>
-      <div className={cn('fixed inset-x-0 z-50 px-4 pointer-events-none safe-area-pb', bottomClass)}>
+      <div className={cn('fixed inset-x-0 z-50 px-4 pointer-events-none safe-area-px', bottomClass)}>
         <div className="mx-auto max-w-lg pointer-events-auto rounded-2xl bg-gradient-to-r from-primary to-primary-light text-white p-4 shadow-xl flex gap-3 items-start border border-white/10">
           <div className="h-10 w-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
             <Download className="h-5 w-5" />

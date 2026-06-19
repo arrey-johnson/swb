@@ -12,7 +12,7 @@ export default function FundGoalPage() {
   const firstGoal = goals?.[0]
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-gray-50">
+    <div className="min-h-dvh flex items-center justify-center px-6 bg-gray-50 safe-area-pt safe-area-pb safe-area-px">
       <Card className="max-w-md w-full text-center">
         <div className="mx-auto h-14 w-14 rounded-full bg-success/10 flex items-center justify-center mb-4">
           <Wallet className="h-7 w-7 text-success" />

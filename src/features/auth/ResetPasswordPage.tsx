@@ -50,7 +50,7 @@ export default function ResetPasswordPage() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6 bg-gray-50">
+      <div className="min-h-dvh flex items-center justify-center px-6 bg-gray-50 safe-area-pt safe-area-pb safe-area-px">
         <Card className="max-w-sm w-full text-center p-6">
           <p className="text-gray-500 text-sm">
             Invalid or expired reset link. Please request a new one from the sign-in page.
@@ -64,7 +64,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center px-6 py-12 bg-gradient-to-b from-primary/5 to-gray-50">
+    <div className="min-h-dvh flex flex-col justify-center px-6 py-12 bg-gradient-to-b from-primary/5 to-gray-50 safe-area-pt safe-area-pb safe-area-px">
       <div className="mx-auto w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="mx-auto h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center mb-4">

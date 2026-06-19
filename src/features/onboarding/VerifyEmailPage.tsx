@@ -7,7 +7,7 @@ export default function VerifyEmailPage() {
   const { user } = useAuth()
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-gray-50">
+    <div className="min-h-dvh flex items-center justify-center px-6 bg-gray-50 safe-area-pt safe-area-pb safe-area-px">
       <Card className="max-w-sm w-full text-center">
         <div className="mx-auto h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center mb-4">
           {user?.email_confirmed_at ? (

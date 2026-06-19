@@ -30,7 +30,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center px-6 py-12 bg-gradient-to-b from-primary/5 to-gray-50">
+    <div className="min-h-dvh flex flex-col justify-center px-6 py-12 bg-gradient-to-b from-primary/5 to-gray-50 safe-area-pt safe-area-pb safe-area-px">
       <div className="mx-auto w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center mb-4">

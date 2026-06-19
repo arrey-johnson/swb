@@ -29,7 +29,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center px-6 py-12 bg-gradient-to-b from-primary/5 to-gray-50 relative">
+    <div className="min-h-dvh flex flex-col justify-center px-6 py-12 bg-gradient-to-b from-primary/5 to-gray-50 relative safe-area-pt safe-area-pb safe-area-px">
       <div className="absolute top-4 right-4">
         <PwaInstallButton />
       </div>

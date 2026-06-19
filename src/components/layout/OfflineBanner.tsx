@@ -18,7 +18,7 @@ export function OfflineBanner() {
   if (!offline) return null
 
   return (
-    <div className="bg-warning text-white text-center text-sm py-2 px-4 flex items-center justify-center gap-2">
+    <div className="bg-warning text-white text-center text-sm py-2 px-4 flex items-center justify-center gap-2 safe-area-pt safe-area-px">
       <WifiOff className="h-4 w-4" />
       You're offline. Some features may be unavailable.
     </div>

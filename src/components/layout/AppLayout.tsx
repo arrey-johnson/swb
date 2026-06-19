@@ -26,8 +26,8 @@ export function AppLayout() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100">
+    <div className="min-h-dvh bg-gray-50 pb-bottom-nav safe-area-px">
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100 safe-area-pt">
         <div className="mx-auto max-w-lg px-4 py-3 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
@@ -72,7 +72,7 @@ export function AppLayout() {
         <Outlet />
       </main>
 
-      <nav className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-100 safe-area-pb">
+      <nav className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-100 safe-area-pb safe-area-px">
         <div className="mx-auto max-w-lg flex">
           {saverNav.map(({ to, icon: Icon, label }) => {
             const active =
