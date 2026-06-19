@@ -1,0 +1,20 @@
+import { Navigate, Outlet } from 'react-router-dom'
+import { useProfile } from '@/lib/api/hooks'
+
+export function AdminRoute() {
+  const { data: profile, isLoading } = useProfile()
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    )
+  }
+
+  if (profile?.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />
+  }
+
+  return <Outlet />
+}

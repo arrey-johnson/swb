@@ -1,0 +1,11 @@
+{
+  "name": "SaveWithBanks",
+  "short_name": "SWB",
+  "description": "Goal-based savings platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6D28D9",
+  "icons": [
+  ]
+}
