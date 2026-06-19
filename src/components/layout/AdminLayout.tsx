@@ -8,6 +8,7 @@ import { useAuth } from '@/app/AuthProvider'
 import { useProfile, useDepositRequests, useAdminWithdrawals } from '@/lib/api/hooks'
 import { useAdminRealtimeSync } from '@/lib/hooks/useAdminRealtimeSync'
 import { PwaInstallButton } from '@/components/layout/PwaInstallPrompt'
+import { AppIcon } from '@/components/brand/BrandMark'
 import { useState } from 'react'
 
 const primaryNav = [
@@ -84,9 +85,7 @@ export function AdminLayout() {
     <div className="flex flex-col h-full">
       <div className="px-4 py-5 border-b border-slate-800">
         <Link to="/admin" className="flex items-center gap-3" onClick={onNavigate}>
-          <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center ring-1 ring-white/20">
-            <span className="text-white font-bold text-[10px] tracking-tight">SWB</span>
-          </div>
+          <AppIcon size="sidebar" />
           <div>
             <span className="font-semibold text-white block leading-tight">SaveWithBanks</span>
             <span className="text-[10px] text-slate-400 uppercase tracking-wider">Admin Console</span>
@@ -134,9 +133,7 @@ export function AdminLayout() {
       <header className="sticky top-0 z-40 bg-slate-900 text-white border-b border-slate-800 lg:hidden safe-area-pt safe-area-px">
         <div className="px-4 py-3 flex items-center justify-between">
           <Link to="/admin" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-xl bg-white/10 flex items-center justify-center">
-              <span className="text-white font-bold text-[10px] tracking-tight">SWB</span>
-            </div>
+            <AppIcon size="sm" />
             <span className="font-semibold">Admin</span>
           </Link>
           <div className="flex items-center gap-2">

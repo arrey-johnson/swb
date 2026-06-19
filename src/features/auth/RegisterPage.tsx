@@ -4,6 +4,7 @@ import { useAuth } from '@/app/AuthProvider'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { PasswordInput } from '@/components/ui/PasswordInput'
+import { AppIcon } from '@/components/brand/BrandMark'
 
 export default function RegisterPage() {
   const { signUp } = useAuth()
@@ -33,9 +34,7 @@ export default function RegisterPage() {
     <div className="min-h-dvh flex flex-col justify-center px-6 py-12 bg-gradient-to-b from-primary/5 to-gray-50 safe-area-pt safe-area-pb safe-area-px">
       <div className="mx-auto w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center mb-4">
-            <span className="text-white font-bold text-lg tracking-tight">SWB</span>
-          </div>
+          <AppIcon size="lg" className="rounded-2xl mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900">Create account</h1>
           <p className="text-gray-500 mt-1">Start your savings journey today</p>
         </div>

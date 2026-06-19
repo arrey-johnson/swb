@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { PasswordInput } from '@/components/ui/PasswordInput'
 import { PwaInstallButton } from '@/components/layout/PwaInstallPrompt'
+import { AppIcon } from '@/components/brand/BrandMark'
 
 export default function LoginPage() {
   const { signIn } = useAuth()
@@ -35,9 +36,7 @@ export default function LoginPage() {
       </div>
       <div className="mx-auto w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center mb-4">
-            <span className="text-white font-bold text-lg tracking-tight">SWB</span>
-          </div>
+          <AppIcon size="lg" className="rounded-2xl mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
           <p className="text-gray-500 mt-1">Sign in to your SaveWithBanks account</p>
         </div>

@@ -6,6 +6,7 @@ import { useUnreadCount } from '@/lib/api/hooks'
 import { useRealtimeSync } from '@/lib/hooks/useRealtimeSync'
 import { AccountStatusBanner } from '@/components/layout/AccountStatusBanner'
 import { PwaInstallButton } from '@/components/layout/PwaInstallPrompt'
+import { AppIcon } from '@/components/brand/BrandMark'
 import { useLanguage } from '@/lib/i18n/LanguageProvider'
 
 export function AppLayout() {
@@ -30,9 +31,7 @@ export function AppLayout() {
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100 safe-area-pt">
         <div className="mx-auto max-w-lg px-4 py-3 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
-              <span className="text-white font-bold text-[10px] tracking-tight">SWB</span>
-            </div>
+            <AppIcon size="sm" />
             <span className="font-semibold text-gray-900">SaveWithBanks</span>
           </Link>
           <div className="flex items-center gap-1">

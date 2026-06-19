@@ -1,39 +1,34 @@
 #!/usr/bin/env python3
-"""Generate PWA icons for SaveWithBanks."""
+"""Generate PWA and favicon assets from public/app-icon.png."""
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 
 PUBLIC = Path(__file__).resolve().parent.parent / "public"
-COLOR = (109, 40, 217)  # #6D28D9
-WHITE = (255, 255, 255)
+SOURCE = PUBLIC / "app-icon.png"
 
 
-def make_icon(size: int) -> Image.Image:
-    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
-    radius = int(size * 0.25)
-    draw.rounded_rectangle([0, 0, size - 1, size - 1], radius=radius, fill=COLOR)
-    font_size = int(size * 0.26)
-    try:
-        font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", font_size)
-    except OSError:
-        font = ImageFont.load_default()
-    text = "SWB"
-    bbox = draw.textbbox((0, 0), text, font=font)
-    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    draw.text(((size - tw) / 2, (size - th) / 2 - size * 0.04), text, fill=WHITE, font=font)
-    return img
+def resize_icon(size: int) -> Image.Image:
+    img = Image.open(SOURCE).convert("RGBA")
+    return img.resize((size, size), Image.LANCZOS)
 
 
 def main():
+    if not SOURCE.exists():
+        raise SystemExit(f"Missing source icon: {SOURCE}")
+
     PUBLIC.mkdir(parents=True, exist_ok=True)
-    for size in (192, 512):
-        path = PUBLIC / f"pwa-{size}x{size}.png"
-        make_icon(size).save(path, "PNG")
+    for icon_size in (192, 512):
+        path = PUBLIC / f"pwa-{icon_size}x{icon_size}.png"
+        resize_icon(icon_size).save(path, "PNG", optimize=True)
         print(f"Wrote {path}")
-    # Apple touch icon
-    make_icon(180).save(PUBLIC / "apple-touch-icon.png", "PNG")
-    print(f"Wrote {PUBLIC / 'apple-touch-icon.png'}")
+
+    apple_path = PUBLIC / "apple-touch-icon.png"
+    resize_icon(180).save(apple_path, "PNG", optimize=True)
+    print(f"Wrote {apple_path}")
+
+    favicon_path = PUBLIC / "favicon.png"
+    resize_icon(32).save(favicon_path, "PNG", optimize=True)
+    print(f"Wrote {favicon_path}")
 
 
 if __name__ == "__main__":

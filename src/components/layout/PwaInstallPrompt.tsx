@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { useLanguage } from '@/lib/i18n/LanguageProvider'
 import { usePwaInstall } from '@/lib/hooks/usePwaInstall'
+import { AppIcon } from '@/components/brand/BrandMark'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -86,9 +87,7 @@ export function PwaInstallPrompt({ bottomOffset = 'nav' }: { bottomOffset?: Bott
     <>
       <div className={cn('fixed inset-x-0 z-50 px-4 pointer-events-none safe-area-px', bottomClass)}>
         <div className="mx-auto max-w-lg pointer-events-auto rounded-2xl bg-gradient-to-r from-primary to-primary-light text-white p-4 shadow-xl flex gap-3 items-start border border-white/10">
-          <div className="h-10 w-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-            <Download className="h-5 w-5" />
-          </div>
+          <AppIcon size="md" className="shrink-0" />
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-sm">{t('pwa.title')}</p>
             <p className="text-xs text-white/80 mt-0.5">{t('pwa.body')}</p>
